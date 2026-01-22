@@ -1,9 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head, Link, router, useForm } from '@inertiajs/react';
 
 export default function Index({ clientes, filters = {} }) {
     const [search, setSearch] = useState(filters.search || '');
+    const [cepLoading, setCepLoading] = useState(false);
+    const [cep, setCep] = useState('');
+
     const { data, setData, post, processing, errors, reset } = useForm({
         nome: '',
         cpf_cnpj: '',
@@ -12,6 +15,65 @@ export default function Index({ clientes, filters = {} }) {
         endereco: '',
         dados_bancarios: '',
     });
+
+    // Máscara para CPF/CNPJ
+    const maskCpfCnpj = (value) => {
+        const cleanValue = value.replace(/\D/g, '');
+        if (cleanValue.length <= 11) {
+            return cleanValue
+                .replace(/(\d{3})(\d)/, '$1.$2')
+                .replace(/(\d{3})(\d)/, '$1.$2')
+                .replace(/(\d{3})(\d{1,2})$/, '$1-$2');
+        } else {
+            return cleanValue
+                .replace(/^(\d{2})(\d)/, '$1.$2')
+                .replace(/^(\d{2})\.(\d{3})(\d)/, '$1.$2.$3')
+                .replace(/\.(\d{3})(\d)/, '.$1/$2')
+                .replace(/(\d{4})(\d)/, '$1-$2')
+                .substring(0, 18);
+        }
+    };
+
+    // Máscara para Telefone
+    const maskPhone = (value) => {
+        const cleanValue = value.replace(/\D/g, '');
+        if (cleanValue.length <= 10) {
+            return cleanValue
+                .replace(/(\d{2})(\d)/, '($1) $2')
+                .replace(/(\d{4})(\d)/, '$1-$2');
+        } else {
+            return cleanValue
+                .replace(/(\d{2})(\d)/, '($1) $2')
+                .replace(/(\d{5})(\d)/, '$1-$2')
+                .substring(0, 15);
+        }
+    };
+
+    // Máscara para CEP
+    const maskCep = (value) => {
+        return value.replace(/\D/g, '').replace(/(\d{5})(\d)/, '$1-$2').substring(0, 9);
+    };
+
+    const handleCepChange = async (e) => {
+        const value = maskCep(e.target.value);
+        setCep(value);
+
+        if (value.replace(/\D/g, '').length === 8) {
+            setCepLoading(true);
+            try {
+                const response = await fetch(`https://viacep.com.br/ws/${value.replace(/\D/g, '')}/json/`);
+                const result = await response.json();
+                if (!result.erro) {
+                    const fullAddress = `${result.logradouro}, ${result.bairro}, ${result.localidade} - ${result.uf}`;
+                    setData('endereco', fullAddress);
+                }
+            } catch (error) {
+                console.error("Erro ao buscar CEP", error);
+            } finally {
+                setCepLoading(false);
+            }
+        }
+    };
 
     const handleSearch = (e) => {
         e.preventDefault();
@@ -23,6 +85,7 @@ export default function Index({ clientes, filters = {} }) {
         post(route('clientes.store'), { 
             onSuccess: () => {
                 reset();
+                setCep('');
                 document.getElementById('modal-cliente').close();
             } 
         });
@@ -133,30 +196,87 @@ export default function Index({ clientes, filters = {} }) {
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div className="space-y-2">
                                 <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Nome Completo</label>
-                                <input value={data.nome} onChange={e => setData('nome', e.target.value)} required className="w-full px-4 py-3 bg-slate-50 border-none rounded-xl focus:ring-2 focus:ring-blue-500 font-medium" />
+                                <input 
+                                    value={data.nome} 
+                                    onChange={e => setData('nome', e.target.value)} 
+                                    required 
+                                    placeholder="Ex: João da Silva"
+                                    className="w-full px-4 py-3 bg-slate-50 border-none rounded-xl focus:ring-2 focus:ring-blue-500 font-medium" 
+                                />
                                 {errors.nome && <div className="text-rose-500 text-[10px] font-black uppercase">{errors.nome}</div>}
                             </div>
                             <div className="space-y-2">
                                 <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">CPF ou CNPJ</label>
-                                <input value={data.cpf_cnpj} onChange={e => setData('cpf_cnpj', e.target.value)} required className="w-full px-4 py-3 bg-slate-50 border-none rounded-xl focus:ring-2 focus:ring-blue-500 font-medium" />
+                                <input 
+                                    value={data.cpf_cnpj} 
+                                    onChange={e => setData('cpf_cnpj', maskCpfCnpj(e.target.value))} 
+                                    required 
+                                    placeholder="000.000.000-00"
+                                    className="w-full px-4 py-3 bg-slate-50 border-none rounded-xl focus:ring-2 focus:ring-blue-500 font-medium" 
+                                />
                                 {errors.cpf_cnpj && <div className="text-rose-500 text-[10px] font-black uppercase">{errors.cpf_cnpj}</div>}
                             </div>
                             <div className="space-y-2">
                                 <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">E-mail</label>
-                                <input value={data.email} onChange={e => setData('email', e.target.value)} type="email" className="w-full px-4 py-3 bg-slate-50 border-none rounded-xl focus:ring-2 focus:ring-blue-500 font-medium" />
+                                <input 
+                                    value={data.email} 
+                                    onChange={e => setData('email', e.target.value)} 
+                                    type="email" 
+                                    placeholder="joao@exemplo.com"
+                                    className="w-full px-4 py-3 bg-slate-50 border-none rounded-xl focus:ring-2 focus:ring-blue-500 font-medium" 
+                                />
+                                {errors.email && <div className="text-rose-500 text-[10px] font-black uppercase">{errors.email}</div>}
                             </div>
                             <div className="space-y-2">
                                 <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Telefone</label>
-                                <input value={data.telefone} onChange={e => setData('telefone', e.target.value)} className="w-full px-4 py-3 bg-slate-50 border-none rounded-xl focus:ring-2 focus:ring-blue-500 font-medium" />
+                                <input 
+                                    value={data.telefone} 
+                                    onChange={e => setData('telefone', maskPhone(e.target.value))} 
+                                    placeholder="(00) 00000-0000"
+                                    className="w-full px-4 py-3 bg-slate-50 border-none rounded-xl focus:ring-2 focus:ring-blue-500 font-medium" 
+                                />
+                                {errors.telefone && <div className="text-rose-500 text-[10px] font-black uppercase">{errors.telefone}</div>}
                             </div>
                         </div>
-                        <div className="space-y-2">
-                            <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Endereço</label>
-                            <input value={data.endereco} onChange={e => setData('endereco', e.target.value)} className="w-full px-4 py-3 bg-slate-50 border-none rounded-xl focus:ring-2 focus:ring-blue-500 font-medium" />
+                        
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                            <div className="space-y-2">
+                                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">CEP (Busca Automática)</label>
+                                <div className="relative">
+                                    <input 
+                                        value={cep} 
+                                        onChange={handleCepChange} 
+                                        placeholder="00000-000"
+                                        className="w-full px-4 py-3 bg-slate-50 border-none rounded-xl focus:ring-2 focus:ring-blue-500 font-medium" 
+                                    />
+                                    {cepLoading && (
+                                        <div className="absolute right-3 top-3">
+                                            <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-blue-600"></div>
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+                            <div className="md:col-span-2 space-y-2">
+                                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Endereço Completo</label>
+                                <input 
+                                    value={data.endereco} 
+                                    onChange={e => setData('endereco', e.target.value)} 
+                                    placeholder="Rua, Número, Bairro, Cidade - UF"
+                                    className="w-full px-4 py-3 bg-slate-50 border-none rounded-xl focus:ring-2 focus:ring-blue-500 font-medium" 
+                                />
+                                {errors.endereco && <div className="text-rose-500 text-[10px] font-black uppercase">{errors.endereco}</div>}
+                            </div>
                         </div>
+
                         <div className="space-y-2">
                             <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Dados Bancários / Observações</label>
-                            <textarea value={data.dados_bancarios} onChange={e => setData('dados_bancarios', e.target.value)} rows="3" className="w-full px-4 py-3 bg-slate-50 border-none rounded-xl focus:ring-2 focus:ring-blue-500 font-medium"></textarea>
+                            <textarea 
+                                value={data.dados_bancarios} 
+                                onChange={e => setData('dados_bancarios', e.target.value)} 
+                                rows="3" 
+                                placeholder="Informações adicionais importantes..."
+                                className="w-full px-4 py-3 bg-slate-50 border-none rounded-xl focus:ring-2 focus:ring-blue-500 font-medium"
+                            ></textarea>
                         </div>
                         <div className="pt-4">
                             <button type="submit" disabled={processing} className="w-full bg-blue-600 text-white py-4 rounded-2xl font-black uppercase tracking-widest hover:bg-blue-700 transition shadow-xl shadow-blue-100 disabled:opacity-50">

@@ -35,6 +35,12 @@ class ClienteController extends Controller
             'telefone' => 'nullable|string|max:20',
             'endereco' => 'nullable|string|max:500',
             'dados_bancarios' => 'nullable|string|max:1000',
+        ], [
+            'nome.required' => 'O nome é obrigatório.',
+            'nome.min' => 'O nome deve ter pelo menos 3 caracteres.',
+            'cpf_cnpj.required' => 'O CPF/CNPJ é obrigatório.',
+            'cpf_cnpj.unique' => 'Este CPF/CNPJ já está cadastrado.',
+            'email.email' => 'Insira um e-mail válido.',
         ]);
 
         Cliente::create($validated);

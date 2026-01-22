@@ -154,7 +154,7 @@ export default function AuthenticatedLayout({ children }) {
             )}
 
             {/* Main Content */}
-            <main className={`flex-1 h-screen overflow-y-auto relative custom-scrollbar pt-16 lg:pt-0 transition-all duration-500 ${isSidebarOpen ? 'lg:ml-0' : 'lg:ml-0'}`}>
+            <main className={`flex-1 h-screen overflow-y-auto relative custom-scrollbar pt-16 lg:pt-0 transition-all duration-500 ${isSidebarOpen ? 'lg:pl-80' : 'lg:pl-24'}`}>
                 {/* Loading Overlay */}
                 {isLoading && (
                     <div className="absolute inset-0 bg-white/60 backdrop-blur-sm z-[60] flex items-center justify-center animate-in fade-in duration-300">
