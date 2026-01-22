@@ -45,7 +45,7 @@ class ClienteController extends Controller
 
         Cliente::create($validated);
 
-        return redirect()->route('clientes.index')->with('message', 'Cliente cadastrado com sucesso!');
+        return redirect()->route('clientes.index')->with('success', 'Cliente cadastrado com sucesso!');
     }
 
     public function show(Cliente $cliente)
@@ -60,6 +60,6 @@ class ClienteController extends Controller
     public function destroy(Cliente $cliente)
     {
         $cliente->delete();
-        return redirect()->route('clientes.index')->with('message', 'Cliente removido com sucesso!');
+        return redirect()->route('clientes.index')->with('success', 'Cliente removido com sucesso!');
     }
 }

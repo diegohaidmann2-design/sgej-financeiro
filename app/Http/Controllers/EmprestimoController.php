@@ -29,18 +29,27 @@ class EmprestimoController extends Controller
     {
         $validated = $request->validate([
             'cliente_id' => 'required|exists:clientes,id',
-            'valor_principal' => 'required|numeric|min:0',
+            'valor_principal' => 'required|numeric|min:0.01',
             'taxa_juros' => 'required|numeric|min:0',
             'prazo_meses' => 'required|integer|min:1',
             'metodo_calculo' => 'required|in:simples,composto,price,sac',
             'data_inicio' => 'required|date',
+        ], [
+            'cliente_id.required' => 'Selecione um cliente.',
+            'cliente_id.exists' => 'O cliente selecionado é inválido.',
+            'valor_principal.required' => 'O valor principal é obrigatório.',
+            'valor_principal.min' => 'O valor deve ser maior que zero.',
+            'taxa_juros.required' => 'A taxa de juros é obrigatória.',
+            'prazo_meses.required' => 'O prazo é obrigatório.',
+            'metodo_calculo.required' => 'Selecione um método de cálculo.',
+            'data_inicio.required' => 'A data de início é obrigatória.',
         ]);
 
         $emprestimo = Emprestimo::create($validated);
 
         $this->gerarParcelas($emprestimo);
 
-        return redirect()->back();
+        return redirect()->back()->with('success', 'Empréstimo gerado com sucesso!');
     }
 
     private function gerarParcelas(Emprestimo $emprestimo)

@@ -126,6 +126,7 @@ export default function Index({ emprestimos, clientes }) {
                                     required 
                                     className="w-full px-4 py-3 bg-slate-50 border-none rounded-xl focus:ring-2 focus:ring-blue-500 font-medium" 
                                 />
+                                {errors.valor_principal && <div className="text-rose-500 text-[10px] font-black uppercase">{errors.valor_principal}</div>}
                             </div>
                             <div className="space-y-2">
                                 <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Taxa de Juros (% am)</label>
@@ -137,6 +138,7 @@ export default function Index({ emprestimos, clientes }) {
                                     required 
                                     className="w-full px-4 py-3 bg-slate-50 border-none rounded-xl focus:ring-2 focus:ring-blue-500 font-medium" 
                                 />
+                                {errors.taxa_juros && <div className="text-rose-500 text-[10px] font-black uppercase">{errors.taxa_juros}</div>}
                             </div>
                             <div className="space-y-2">
                                 <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Prazo (Meses)</label>
@@ -147,6 +149,7 @@ export default function Index({ emprestimos, clientes }) {
                                     required 
                                     className="w-full px-4 py-3 bg-slate-50 border-none rounded-xl focus:ring-2 focus:ring-blue-500 font-medium" 
                                 />
+                                {errors.prazo_meses && <div className="text-rose-500 text-[10px] font-black uppercase">{errors.prazo_meses}</div>}
                             </div>
                             <div className="space-y-2">
                                 <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Método de Cálculo</label>

@@ -80,15 +80,18 @@ export default function Show({ cliente }) {
                             <div className="relative">
                                 <span className="absolute left-3 top-3 text-slate-400 font-bold">R$</span>
                                 <input type="number" step="0.01" value={data.valor_principal} onChange={e => setData('valor_principal', e.target.value)} className="w-full border-slate-200 rounded-xl p-3 pl-10 focus:ring-2 focus:ring-blue-500 transition" placeholder="0,00" />
+                                {errors.valor_principal && <div className="text-rose-500 text-[10px] font-black uppercase mt-1">{errors.valor_principal}</div>}
                             </div>
                         </div>
                         <div>
                             <label className="block text-xs font-bold text-slate-500 uppercase tracking-widest mb-2">Taxa de Juros (% mensal)</label>
                             <input type="number" step="0.01" value={data.taxa_juros} onChange={e => setData('taxa_juros', e.target.value)} className="w-full border-slate-200 rounded-xl p-3 focus:ring-2 focus:ring-blue-500 transition" placeholder="0.00" />
+                            {errors.taxa_juros && <div className="text-rose-500 text-[10px] font-black uppercase mt-1">{errors.taxa_juros}</div>}
                         </div>
                         <div>
                             <label className="block text-xs font-bold text-slate-500 uppercase tracking-widest mb-2">Prazo (meses)</label>
                             <input type="number" value={data.prazo_meses} onChange={e => setData('prazo_meses', e.target.value)} className="w-full border-slate-200 rounded-xl p-3 focus:ring-2 focus:ring-blue-500 transition" placeholder="12" />
+                            {errors.prazo_meses && <div className="text-rose-500 text-[10px] font-black uppercase mt-1">{errors.prazo_meses}</div>}
                         </div>
                         <div>
                             <label className="block text-xs font-bold text-slate-500 uppercase tracking-widest mb-2">Método de Cálculo</label>

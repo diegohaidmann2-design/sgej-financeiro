@@ -192,7 +192,7 @@ export default function Index({ clientes, filters = {} }) {
                             </button>
                         </form>
                     </div>
-                    <form onSubmit={submit} className="p-6 lg:p-8 space-y-6">
+                    <form onSubmit={submit} noValidate className="p-6 lg:p-8 space-y-6">
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div className="space-y-2">
                                 <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Nome Completo</label>
@@ -203,7 +203,7 @@ export default function Index({ clientes, filters = {} }) {
                                     placeholder="Ex: João da Silva"
                                     className="w-full px-4 py-3 bg-slate-50 border-none rounded-xl focus:ring-2 focus:ring-blue-500 font-medium" 
                                 />
-                                {errors.nome && <div className="text-rose-500 text-[10px] font-black uppercase">{errors.nome}</div>}
+                                {errors.nome && <div className="text-rose-500 text-[10px] font-black uppercase mt-1">{errors.nome}</div>}
                             </div>
                             <div className="space-y-2">
                                 <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">CPF ou CNPJ</label>
@@ -214,7 +214,7 @@ export default function Index({ clientes, filters = {} }) {
                                     placeholder="000.000.000-00"
                                     className="w-full px-4 py-3 bg-slate-50 border-none rounded-xl focus:ring-2 focus:ring-blue-500 font-medium" 
                                 />
-                                {errors.cpf_cnpj && <div className="text-rose-500 text-[10px] font-black uppercase">{errors.cpf_cnpj}</div>}
+                                {errors.cpf_cnpj && <div className="text-rose-500 text-[10px] font-black uppercase mt-1">{errors.cpf_cnpj}</div>}
                             </div>
                             <div className="space-y-2">
                                 <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">E-mail</label>
@@ -225,7 +225,7 @@ export default function Index({ clientes, filters = {} }) {
                                     placeholder="joao@exemplo.com"
                                     className="w-full px-4 py-3 bg-slate-50 border-none rounded-xl focus:ring-2 focus:ring-blue-500 font-medium" 
                                 />
-                                {errors.email && <div className="text-rose-500 text-[10px] font-black uppercase">{errors.email}</div>}
+                                {errors.email && <div className="text-rose-500 text-[10px] font-black uppercase mt-1">{errors.email}</div>}
                             </div>
                             <div className="space-y-2">
                                 <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Telefone</label>
@@ -235,7 +235,7 @@ export default function Index({ clientes, filters = {} }) {
                                     placeholder="(00) 00000-0000"
                                     className="w-full px-4 py-3 bg-slate-50 border-none rounded-xl focus:ring-2 focus:ring-blue-500 font-medium" 
                                 />
-                                {errors.telefone && <div className="text-rose-500 text-[10px] font-black uppercase">{errors.telefone}</div>}
+                                {errors.telefone && <div className="text-rose-500 text-[10px] font-black uppercase mt-1">{errors.telefone}</div>}
                             </div>
                         </div>
                         
@@ -264,7 +264,7 @@ export default function Index({ clientes, filters = {} }) {
                                     placeholder="Rua, Número, Bairro, Cidade - UF"
                                     className="w-full px-4 py-3 bg-slate-50 border-none rounded-xl focus:ring-2 focus:ring-blue-500 font-medium" 
                                 />
-                                {errors.endereco && <div className="text-rose-500 text-[10px] font-black uppercase">{errors.endereco}</div>}
+                                {errors.endereco && <div className="text-rose-500 text-[10px] font-black uppercase mt-1">{errors.endereco}</div>}
                             </div>
                         </div>
 

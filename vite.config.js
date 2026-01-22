@@ -16,11 +16,10 @@ export default defineConfig({
         strictPort: true,
         allowedHosts: true,
         hmr: {
-            host: process.env.REPL_SLUG && process.env.REPL_OWNER
-                ? `5173-${process.env.REPL_SLUG}.${process.env.REPL_OWNER}.repl.co`
-                : 'localhost',
+            host: '5173-iknw6zonta3xnkqc7owqq-bf560736.us1.manus.computer',
             protocol: 'wss',
             clientPort: 443,
         },
+        cors: true,
     },
 });

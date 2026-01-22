@@ -14,6 +14,11 @@ class ParcelaController extends Controller
         $validated = $request->validate([
             'valor_pago' => 'required|numeric|min:0.01',
             'data_pagamento' => 'required|date',
+        ], [
+            'valor_pago.required' => 'O valor pago é obrigatório.',
+            'valor_pago.min' => 'O valor deve ser maior que zero.',
+            'data_pagamento.required' => 'A data de pagamento é obrigatória.',
+            'data_pagamento.date' => 'Insira uma data válida.',
         ]);
 
         $valorPago = $validated['valor_pago'];
@@ -51,7 +56,7 @@ class ParcelaController extends Controller
         // Verificar se todas as parcelas do empréstimo foram pagas
         $this->verificarQuitacaoEmprestimo($parcela->emprestimo_id);
 
-        return redirect()->back();
+        return redirect()->back()->with('success', 'Pagamento registrado com sucesso!');
     }
 
     private function verificarQuitacaoEmprestimo($emprestimoId)
